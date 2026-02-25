@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PDF to Word Converter</title>
+<style>
+
+body{
+  font-family: Arial;
+  text-align:center;
+  background:#f2f2f2;
+  padding-top:50px;
+}
+
+.container{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  width:300px;
+  margin:auto;
+  box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+button{
+  padding:10px 15px;
+  margin-top:10px;
+  border:none;
+  background:green;
+  color:white;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+#downloadBtn{
+  display:none;
+  background:blue;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>PDF to Word Converter</h2>
+
+<input type="file" id="file" accept="application/pdf"><br>
+
+<button onclick="convertFile()">Convert</button>
+
+<br>
+
+<button id="downloadBtn">Download</button>
+
+<p id="status"></p>
+
+</div>
+
+<script>
+
+let downloadLink = "";
+
+function convertFile(){
+
+let file = document.getElementById("file").files[0];
+
+if(!file){
+  alert("Please select PDF");
+  return;
+}
+
+document.getElementById("status").innerText="Converting...";
+
+
+// ⚠️ Yaha API lagegi
+// DEMO ke liye fake delay
+
+setTimeout(()=>{
+
+document.getElementById("status").innerText="Conversion Done ✅";
+
+downloadLink = URL.createObjectURL(file);
+
+document.getElementById("downloadBtn").style.display="inline-block";
+
+},2000);
+
+}
+
+
+document.getElementById("downloadBtn").onclick=function(){
+
+this.innerText="Downloading...";
+
+let a=document.createElement("a");
+a.href=downloadLink;
+a.download="converted.docx";
+a.click();
+
+}
+
+</script>
+
+</body>
+</html>
