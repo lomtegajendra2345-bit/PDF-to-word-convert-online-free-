@@ -1,44 +1,41 @@
-<!DOCTYPE html>
-<html>
-<body>
-
-<h2>PDF to Word Converter</h2>
-
-<input type="file" id="file"><br><br>
-<button onclick="convertFile()">Convert</button>
+<input type="file" id="pdfFile" accept="application/pdf" />
+<button onclick="convertPDF()">Convert</button>
 
 <p id="status"></p>
 
-<a id="download" style="display:none">Download File</a>
-
 <script>
+async function convertPDF() {
+  const fileInput = document.getElementById("pdfFile");
+  const status = document.getElementById("status");
 
-async function convertFile(){
+  if (!fileInput.files.length) {
+    status.innerText = "Please select a file";
+    return;
+  }
 
-const file = document.getElementById("file").files[0];
+  const formData = new FormData();
+  formData.append("file", fileInput.files[0]);
 
-if(!file){
-alert("PDF select karo");
-return;
+  status.innerText = "Converting...";
+
+  const response = await fetch("/api/convert", {
+    method: "POST",
+    body: formData
+  });
+
+  if (!response.ok) {
+    status.innerText = "Conversion failed ❌";
+    return;
+  }
+
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "converted.docx";
+  a.click();
+
+  status.innerText = "Download ready ✅";
 }
-
-document.getElementById("status").innerText="Converting...";
-
-const res = await fetch("/api/convert", {
-method:"POST"
-});
-
-const data = await res.json();
-
-const url = data.tasks[2].result.files[0].url;
-
-document.getElementById("download").href = url;
-document.getElementById("download").style.display="block";
-document.getElementById("status").innerText="Done ✅";
-
-}
-
 </script>
-
-</body>
-</html>
